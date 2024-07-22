@@ -51,7 +51,7 @@ $(EXEC) : $(OBJFILES)
 
 #Dependencies
 
-$(OBJ_DIR)/itm_types.o : $(OBJ_DIR)/itm_types.F90
+$(OBJ_DIR)/itm_types.o : $(OBJ_DIR)/itm_types.f90
 	$(COMPILER) -o $(OBJ_DIR)/itm_types.o \
 	$(OBJ_DIR)/itm_types.F90
 
@@ -124,9 +124,9 @@ $(OBJ_DIR)/RFOF_diagnostics.o : $(OBJ_DIR)/RFOF_diagnostics.F90
 	$(COMPILER) -o $(OBJ_DIR)/RFOF_diagnostics.o \
 	$(OBJ_DIR)/RFOF_diagnostics.F90
 
-$(OBJ_DIR)/euitm_waves_interface.o : $(OBJ_DIR)/euitm_waves_interface.F90
+$(OBJ_DIR)/euitm_waves_interface.o : $(OBJ_DIR)/euitm_waves_interface.f90
 	$(COMPILER) -o $(OBJ_DIR)/euitm_waves_interface.o \
-	$(OBJ_DIR)/euitm_waves_interface.F90
+	$(OBJ_DIR)/euitm_waves_interface.f90
 
 $(OBJ_DIR)/RFOF_Efield_update.o : $(OBJ_DIR)/RFOF_Efield_update.F90
 	$(COMPILER) -o $(OBJ_DIR)/RFOF_Efield_update.o \
@@ -144,23 +144,23 @@ $(OBJ_DIR)/RFOF_mpi_serial.o : $(OBJ_DIR)/RFOF_mpi_serial.F90
 	$(COMPILER) -o $(OBJ_DIR)/RFOF_mpi_serial.o \
 	$(OBJ_DIR)/RFOF_mpi_serial.F90
 
-$(OBJ_DIR)/GlobalParam_mod.o : $(OBJ_DIR)/GlobalParam_mod.F90
+$(OBJ_DIR)/GlobalParam_mod.o : $(OBJ_DIR)/GlobalParam.f90
 	$(COMPILER) -o $(OBJ_DIR)/GlobalParam_mod.o \
-	$(OBJ_DIR)/GlobalParam_mod.F90
+	$(OBJ_DIR)/GlobalParam.f90
 
-$(OBJ_DIR)/coherentwave_mod.o : $(OBJ_DIR)/coherentwave_mod.F90
+$(OBJ_DIR)/coherentwave_mod.o : $(OBJ_DIR)/coherentwave.f90
 	$(COMPILER) -o $(OBJ_DIR)/coherentwave_mod.o \
-	$(OBJ_DIR)/coherentwave_mod.F90
+	$(OBJ_DIR)/coherentwave.f90
 
-$(OBJ_DIR)/euitm_schemas.o : $(OBJ_DIR)/euitm_schemas.F90
+$(OBJ_DIR)/euitm_schemas.o : $(OBJ_DIR)/euitm_schemas.f90
 	$(COMPILER) -o $(OBJ_DIR)/euitm_schemas.o \
-	$(OBJ_DIR)/euitm_schemas.F90
+	$(OBJ_DIR)/euitm_schemas.f90
 
-$(OBJ_DIR)/Fullwave_mod.o : $(OBJ_DIR)/Fullwave_mod.F90
+$(OBJ_DIR)/Fullwave_mod.o : $(OBJ_DIR)/Fullwave.f90
 	$(COMPILER) -o $(OBJ_DIR)/Fullwave_mod.o \
-	$(OBJ_DIR)/Fullwave_mod.F90
+	$(OBJ_DIR)/Fullwave.f90
 
-$(OBJ_DIR)/Local.o : $(OBJ_DIR)/Local.F90
+$(OBJ_DIR)/Local.o : $(OBJ_DIR)/Local.f90
 	$(COMPILER) -o $(OBJ_DIR)/Local.o \
 	$(OBJ_DIR)/Local.F90
 

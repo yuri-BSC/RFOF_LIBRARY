@@ -184,8 +184,8 @@ contains
     print *, " ---Init marker---"
     E = E * 1.6022e-19
     Blocal = get_local_magnetic_field(R,phi,z)
+    print *, "test-1"
     tauBounce = R0 / sqrt(2*E/1.66e-27)
- 
     call make_marker(marker_static, weight,charge,mass,E,xi,tauBounce,Blocal)
     !call set_marker_pointers_from_marker(marker_static , marker)
     

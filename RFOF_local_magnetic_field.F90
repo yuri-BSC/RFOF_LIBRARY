@@ -29,11 +29,11 @@ contains
 
     ! Output
     type(magnetic_field_local) :: Blocal
-
 #ifdef USE_MAGNETIC_FIELD_INTERFACE
     interface
        subroutine local_magnetic_field_interface_to_RFOF(R,phi,z, &
             psi,theta,Bmod,F,psi_Estatic,dBmod_dpsi,dF_dpsi,dBmod_dtheta,dF_dtheta)
+
          real(8), intent(in) :: R
          real(8), intent(in) :: phi
          real(8), intent(in) :: z
@@ -46,21 +46,21 @@ contains
          real(8), intent(out) :: dF_dpsi
          real(8), intent(out) :: dBmod_dtheta
          real(8), intent(out) :: dF_dtheta
-
        end subroutine local_magnetic_field_interface_to_RFOF
     end interface
+
 #endif  ! USE_MAGNETIC_FIELD_INTERFACE
     Blocal%R = R
     Blocal%phi = phi
     Blocal%z = z
-    print *, marker%mass
 #ifdef USE_MAGNETIC_FIELD_INTERFACE
     call local_magnetic_field_interface_to_RFOF(R,phi,z, &
          Blocal%psi,Blocal%theta,Blocal%Bmod,Blocal%F,Blocal%psi_Estatic, &
          Blocal%dBmod_dpsi,Blocal%dF_dpsi,Blocal%dBmod_dtheta,Blocal%dF_dtheta)
 #else  ! USE_MAGNETIC_FIELD_INTERFACE
-    Blocal%Bmod = marker%mass ! (0.5d0 * marker%mass) /  1 !marker%magneticMoment  ! (0.5d0 * marker%mass * marker%vperp**2) /  marker%magneticMoment  
-    print *, "test-1"
+    print *, "Abans de marker mass"
+    Blocal%Bmod =  (0.5d0 * marker%mass * marker%vperp**2) /  marker%magneticMoment  
+    print *, "Després de marker mass"
     Blocal%psi = marker%psi
     Blocal%F = (marker%Pphi - marker%charge * marker%psi) / &
          (marker%mass * marker%vpar / Blocal%Bmod)
