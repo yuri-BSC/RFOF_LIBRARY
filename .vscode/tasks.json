@@ -1,0 +1,110 @@
+{
+
+    /*
+    REQUIREMENTS:
+    - intel fortran compiler
+    - intel mpi
+    - gfortran compiler
+    - openmpi
+    - cmake
+    - configuration files (custom fusion group)
+    */
+
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build alya dbg cmake",
+            "type": "shell",
+            "command": "mkdir -p ${config:dir_debug}-${config:compiler}; cd $_ ; ${config:set_env} cmake -DCMAKE_BUILD_TYPE=Debug ${config:alya_modules_cmake} -DWITH_CTEST=OFF .. ; cmake --build . -j ${config:make_nthreads}",
+        },
+        {
+            "label": "build alya rel cmake",
+            "type": "shell",
+            "command": "mkdir -p ${config:dir_release}-${config:compiler}; cd $_ ; ${config:set_env} cmake -DCMAKE_BUILD_TYPE=Release ${config:alya_modules_cmake} -DWITH_CTEST=OFF .. ; cmake --build . -j ${config:make_nthreads}",
+        },
+        // for MN: cmake -DCMAKE_BUILD_TYPE=Release -DWITH_ALL_MODULES=OFF -DWITH_MODULE_NEUTRO=ON -DWITH_MODULE_TEMPER=ON -DWITH_MODULE_NASTIN=ON -DWITH_MODULE_MAGNET=ON -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc -DCMAKE_Fortran_COMPILER=ifort -DWITH_CTEST=OFF ..
+        // additionals: -DWITH_MODULE_SOLIDZ=ON -DWITH_NDIMEPAR=ON -DVECTOR_SIZE_CPU=16/24 (16 is default)
+        {
+            "label": "build alya dbg",
+            "type": "shell",
+            "command": "${config:set_env} cd configure; make -j ${config:make_nthreads}",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "config dbg",
+                "build metis4",
+            ],
+        },
+        {
+            "label": "build alya rel",
+            "type": "shell",
+            "command": "${config:set_env} cd configure; make -j ${config:make_nthreads}",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "config rel",
+                "build metis4",
+            ],
+        },
+        {
+            "label": "build alya all",
+            "type": "shell",
+            "command": "echo 'debug and release configurations built.'",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "build alya dbg",
+                "build alya rel",
+            ],
+        },
+        {
+            "label": "clean alya dbg cmake",
+            "type": "shell",
+            "command": "cd ${config:dir_debug}-${config:compiler}; make clean",
+        },
+        {
+            "label": "clean alya rel cmake",
+            "type": "shell",
+            "command": "cd ${config:dir_release}-${config:compiler}; make clean",
+        },
+        {
+            "label": "clean alya",
+            "type": "shell",
+            "command": "cd configure; make clean",
+        },
+        {
+            "label": "clean metis4",
+            "type": "shell",
+            "command": "cd Thirdparties/metis-4.0; make clean",
+        },
+        {
+            "label": "build metis4",
+            "type": "shell",
+            "command": "cd configure; make metis4",
+        },
+        {
+            "label": "config rel",
+            "type": "shell",
+            "command": "cd configure; cp config_${config:compiler}_exe.in config.in; ./configure -x ${config:alya_modules}",
+        },
+        {
+            "label": "config dbg",
+            "type": "shell",
+            "command": "cd configure; cp config_${config:compiler}_dbg.in config.in; ./configure -g ${config:alya_modules}",
+        },
+        {
+            "label": "build alya2pos",
+            "type": "shell",
+            "command": "${config:set_env} cd configure; make alya2pos",
+        },
+        // {
+        //     "label": "run alya2pos",
+        //     "type": "shell",
+        //     // "command": "cd ${config:alya_cases_dir}/${input:case}; .${workspaceFolder}/configure/alya2pos.x ${input:case}",
+        //     // "command": "cd ${config:alya_cases_dir}/${env:alya_case}; .${workspaceFolder}/configure/alya2pos.x ${env:alya_case}",
+        //     // "dependsOrder": "sequence",
+        //     // "dependsOn": [
+        //     //     "build alya2pos",
+        //     // ],
+        // },
+    ],
+}

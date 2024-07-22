@@ -1,0 +1,59 @@
+{
+    "files.exclude": {
+        "**/.git": false,
+        "//**/.git": true,
+    },
+    // "fortran.linter.compiler": "gfortran",
+    // "fortran.linter.modOutput": "${workspaceFolder}/configure/Objects_linter/",
+    "fortran.linter.compiler": "ifx",//"ifort",
+    // "fortran.linter.compilerPath": "/opt/intel/oneapi/compiler/latest/linux/bin/intel64",
+    "fortran.linter.compilerPath": "/opt/intel/oneapi/compiler/latest/bin",
+    "fortran.linter.modOutput": "${workspaceFolder}/configure/Objects_g/",
+    // "fortran.linter.extraArgs": ["-nofpp"], // no longer necessary, fixed for ifort
+    "fortran.fortls.directories": ["${workspaceFolder}/src"],
+    // "fortran.linter.includePaths": [
+    //     // "${workspaceFolder}/configure/Objects_x",
+    //     "${workspaceFolder}/configure/Objects_g",
+    // ],
+    "cmake.configureOnOpen": false,
+    "cmake.configureOnEdit": false,
+    "make_nthreads": "9", // number of threads used when compiling with make. Usually cpu threads + 1
+    "fortran.fortls.disableDiagnostics": true, 
+    // "git.useEditorAsCommitInput": true,
+    "git.showActionButton": {
+        "commit": true,
+        "publish": false,//true,
+        "sync": true,
+    },
+    "gitPrefix.replacement": "issue #$1 ",
+    "gitPrefix.pattern": "(\\d+).*",
+    "python.analysis.typeCheckingMode": "basic",
+    "intel_env": "source /opt/intel/oneapi/setvars.sh; export CC=icc; export CXX=icpc; export FC=ifort; export F90=ifort; export I_MPI_F90=ifort",
+    // "intel_env": "source /opt/intel/oneapi/setvars.sh; export CC=icx; export CXX=icpx; export FC=ifort; export F90=ifort; export I_MPI_F90=ifort",
+    "gnu_env": "export FC=gfortran; export F90=gfortran",
+
+    // "alya_modules": "parall neutro temper nastin magnet equili",// solidz",
+    // "alya_modules": "parall neutro temper nastin magnet",
+    // "alya_modules": "parall neutro temper nastin",
+    // "alya_modules": "parall neutro equili",
+    // "alya_modules": "parall neutro",
+    "alya_modules": "parall equili",
+    
+    // "alya_modules_cmake": "-DWITH_ALL_MODULES=OFF -DWITH_MODULE_NEUTRO=ON -DWITH_MODULE_TEMPER=ON -DWITH_MODULE_NASTIN=ON -DWITH_MODULE_MAGNET=ON -DWITH_MODULE_EQUILI=ON", // -DWITH_MODULE_SOLIDZ=ON",
+    // "alya_modules_cmake": "-DWITH_ALL_MODULES=OFF -DWITH_MODULE_NEUTRO=ON -DWITH_MODULE_TEMPER=ON -DWITH_MODULE_NASTIN=ON -DWITH_MODULE_MAGNET=ON",
+    // "alya_modules_cmake": "-DWITH_ALL_MODULES=OFF -DWITH_MODULE_NEUTRO=ON -DWITH_MODULE_TEMPER=ON -DWITH_MODULE_NASTIN=ON",
+    // "alya_modules_cmake": "-DWITH_ALL_MODULES=OFF -DWITH_MODULE_NEUTRO=ON -DWITH_MODULE_EQUILI=ON",
+    // "alya_modules_cmake": "-DWITH_ALL_MODULES=OFF -DWITH_MODULE_NEUTRO=ON",
+    "alya_modules_cmake": "-DWITH_ALL_MODULES=OFF -DWITH_MODULE_EQUILI=ON",
+    
+
+    "compiler": "intel", "mpi_root": "/opt/intel/oneapi/mpi/latest/bin", "mpi_np": "5", "set_env": "${config:intel_env};",
+    // "compiler": "gnu", "mpi_root":"/usr/bin", "mpi_np": "4", "set_env": "${config:gnu_env};",
+
+    "dir_debug": "build-dbg", // directory to use when compiling debug with cmake
+    "dir_release": "build", // directory to use when compiling release with cmake
+
+    // "alya_cases_dir": "/mnt/e/alya_cases", // directory where alya cases are stored locally
+    "alya_cases_dir": "${workspaceFolder}/../execution", // directory where alya cases are stored locally
+    
+}

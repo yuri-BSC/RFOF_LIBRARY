@@ -1,0 +1,67 @@
+&input_control
+    dt = 1e-4,
+    NtimeSteps = 10
+/
+
+&input_magnetifield
+    R0 = 5.5 
+    aminor = 0.53
+    B0 = 2.6
+    q = 1
+/
+
+! Inventat
+&input_marker
+    weight = 1
+    R = 5.5
+    phi = 43.4
+    z = 0.0
+    mass = 2.0
+    charge = 1.0
+    E = 5.0e3
+    xi = 0.0
+/
+
+&input_wavefields
+  nfreq = 1,
+  nnphi = 1,
+  RFpower = 1.0,
+  EfieldNormalisation = 0.5,
+  freq = 30e6,
+  nphi = 12,
+  kperp = 0.1
+/
+
+
+&input_resonance_memory
+    nStoreTimes = 10
+/
+
+&IO_control
+    start_time_event_output = 0e-4
+    output__2D_RZ_out = .FALSE.
+    output__Orbit = .FALSE.
+    MAX_number_of_points_stored_in_the_Orbit = 10000
+    output__rf_kicks = .TRUE.
+    MAX_number_of_points_stored_in_the_rf_kick = 10000
+    output__resonace_predictions = .FALSE.
+    MAX_number_of_points_stored_in_the_resonance_memory = 10000
+/
+
+&simplify_rfof
+    simplify__static_resonance_position_during_RF_kick = .TRUE.
+    simplify__drift_velocity_does_not_affect_resonance_condition = .TRUE.
+    simplify__parallel_velocity_does_not_affect_resonance_condition = .TRUE.
+    simplify__assume_zero_larmor_radius_in_KPERPxRHO = .FALSE.
+    simplify__kpar_is_nphi_over_R = .TRUE.
+    width_of_rf_resonance_layer = 1.0d-2
+/
+
+
+&rz_boundingbox
+    Rmin = 0.1d0
+    Rmax = 20.0d0
+    Zmin = -20.0d0
+    Zmax = 20.0d0
+/
+
