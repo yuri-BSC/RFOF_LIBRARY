@@ -1,0 +1,20 @@
+ RFOF output
+ version 0                                                                                                                       
+ Time integrated 1D diagnostics. No. kicks=           0
+  
+ Number_of_frequencies =            1
+ Frequencies =     0.30000E+08
+  
+ % Number of toroidal modes for each frequency; (jfreq , nphi(jfreq)) : 
+           1           1
+ % Toroidal modes numbers for each frequency; (jfreq , jnphi, nphi(jfreq,jnphi)) : 
+           1           1   12.0000000    
+  
+ Length of diagnostic time integration interval =    1.8009999999974752E-003
+  
+Total power absorbed  [W]    =  0.00000000E+00
+Total torque absorbed [Nm/s] =  0.00000000E+00
+  
+ % Total absorbed power and torque, for each frequency and toroidal mode; 
+ %    (jfreq , jnphi, POWER(jfreq,jnphi), TORQUE(jfreq,jnphi)) : 
+      1      1 0.00000000E+00 0.00000000E+00

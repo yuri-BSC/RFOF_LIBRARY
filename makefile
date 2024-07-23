@@ -53,7 +53,7 @@ $(EXEC) : $(OBJFILES)
 
 $(OBJ_DIR)/itm_types.o : $(OBJ_DIR)/itm_types.f90
 	$(COMPILER) -o $(OBJ_DIR)/itm_types.o \
-	$(OBJ_DIR)/itm_types.F90
+	$(OBJ_DIR)/itm_types.f90
 
 	
 $(OBJ_DIR)/RFOF_wiener_sample_paths.o : $(OBJ_DIR)/RFOF_wiener_sample_paths.F90
@@ -162,7 +162,7 @@ $(OBJ_DIR)/Fullwave_mod.o : $(OBJ_DIR)/Fullwave.f90
 
 $(OBJ_DIR)/Local.o : $(OBJ_DIR)/Local.f90
 	$(COMPILER) -o $(OBJ_DIR)/Local.o \
-	$(OBJ_DIR)/Local.F90
+	$(OBJ_DIR)/Local.f90
 
 $(OBJ_DIR)/magnetic_field_interface_to_RFOF.o : $(OBJ_DIR)/magnetic_field_interface_to_RFOF.F90
 	$(COMPILER) -o $(OBJ_DIR)/magnetic_field_interface_to_RFOF.o \

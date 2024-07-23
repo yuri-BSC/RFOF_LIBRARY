@@ -12,13 +12,14 @@ module RFOF_markers
 
   implicit none
 
+
   real(8), target :: RFOF_default_weight = 1
 
   type, public :: particle
      integer, pointer :: Id                  !< Number to identify particle
      real(8), pointer :: weight              !< Number of real particles represented by the marker
      real(8), pointer :: charge              !< Charge (SI units; everything is in SI)
-     real(8), pointer :: mass                !< Mass (SI units; everything is in SI)
+     real(8), pointer :: mass               !< Mass (SI units; everything is in SI)
 
      real(8), pointer :: R                   !< Major radius
      real(8), pointer :: phi                 !< Toroidal angle
@@ -50,12 +51,12 @@ module RFOF_markers
 
      real(8), pointer :: time_acceleration
   end type particle
-  !mass=2.0 
+
   type, public :: particle_static
      integer :: Id
      real(8) :: weight
      real(8) :: charge
-     real(8) :: mass
+     real(8) :: mass = 2.0
 
      real(8) :: R
      real(8) :: phi
@@ -84,18 +85,20 @@ module RFOF_markers
      real(8) :: d_vDriftDia_d_rho
      real(8) :: d_vDriftDia_d_dia
      real(8) :: time_acceleration
-    end type particle_static
+  end type particle_static
+
+
 
 contains
 
   function copy_particle_pointer2pointer(pi) result(po)
-
+ 
     ! Input
     type(particle), intent(in) :: pi
 
     ! Output
     type(particle) :: po
-
+    print *, "pointer2pointer"
     po%Id = pi%Id
     po%weight = pi%weight
 
@@ -140,7 +143,7 @@ contains
 
     ! Output
     type(particle_static) :: po
-
+    print *, "pointer2static"
     po%Id = pi%Id
     po%weight = pi%weight
 
@@ -186,7 +189,7 @@ contains
 
     ! Output
     type(particle_static) :: po
-
+    print *, "static2static"
     po%Id = pi%Id
     po%weight = pi%weight
 
@@ -224,28 +227,25 @@ contains
 
   end function copy_particle_static2static
 
-
   !--------------------------------------------------------------------------------
   ! subroutine update_marker
   !--------------------------------------------------------------------------------
   subroutine update_marker(marker,Blocal)
-
+ 
     ! Input
     type(magnetic_field_local), intent(in) :: Blocal
 
     ! Input/Output
     type(particle), intent(inout) :: marker
-
     ! Local
     real(8) :: xi
-
+    print *, "updatemarker"
     xi = sqrt( max(0d0 , (1.0 - Blocal%Bmod*marker%magneticMoment/(marker%energy - marker%charge*Blocal%psi_Estatic)) ) )
 
     ! Get marker
     marker%R   = Blocal%R
     marker%z   = Blocal%z
     marker%phi = Blocal%phi
-
     marker%vpar  = xi * marker%velocity
     marker%vperp  = sqrt( max(marker%velocity**2 - marker%vpar**2 , 0d0) )
     marker%omega_gyro = marker%charge * Blocal%Bmod / marker%mass
@@ -263,13 +263,12 @@ contains
 
     ! Output
     type(particle), intent(out) :: m2
-
+    print *, "set_marker_pointers_from_marker"
     m2%Id = m1%Id
     m2%weight => m1%weight
     m2%R => m1%R
     m2%phi => m1%phi
     m2%z => m1%z
-
     m2%charge => m1%charge
     m2%mass => m1%mass
     m2%energy => m1%energy
@@ -312,25 +311,26 @@ contains
 
     ! Input
     integer, target, intent(in) :: Id
-    real(8), target, intent(in) :: weight,R,phi,z
-    real(8), target, intent(in) :: charge,mass,energy,energy_kinetic,velocity 
+    real(8), target, intent(in) :: weight,R,phi,z, charge
+    real(8), target, intent(in) :: mass
+    real(8), target, intent(in) :: energy,energy_kinetic,velocity 
     real(8), target, intent(in) :: magneticMoment,Pphi,vpar,vperp,omega_gyro,tauBounce 
     real(8), target, intent(in) :: vDrift,vDriftRho,vDriftDia, d_vpar_d_rho, d_vpar_d_dia 
     real(8), target, intent(in) :: d_vperp_d_rho, d_vperp_d_dia, d_vDriftRho_d_rho, d_vDriftRho_d_dia
     real(8), target, intent(in) :: d_vDriftDia_d_rho, d_vDriftDia_d_dia
     real(8), target, intent(in) :: time_acceleration
-  
+
     ! Output
+
     type(particle), intent(out) :: marker
-    print *, "testeando"
+    print *, "set_marker_pointers"
     marker%Id => Id
     marker%weight => weight
     marker%R => R
     marker%phi => phi
     marker%z => z
-
-    marker%charge => charge
     marker%mass => mass
+    marker%charge => charge
     marker%energy => energy
     marker%energy_kinetic => energy_kinetic
     marker%velocity => velocity
@@ -364,10 +364,11 @@ contains
     ! Input
     real(8), intent(in) :: weight,charge,mass,E,xi,tauBounce
     type(magnetic_field_local), intent(in) :: Blocal
-
+   
     ! Output
     type(particle_static), intent(out) :: marker
     ! Get marker
+    print *, "make_marker"
     marker%Id     = 1
     marker%weight = weight
     marker%R   = Blocal%R
@@ -376,7 +377,6 @@ contains
 
     marker%charge  = charge * rfof_ev
     marker%mass  = mass * rfof_amu
-
     marker%energy  = E
     marker%energy_kinetic  = E - marker%charge*Blocal%psi_Estatic
     marker%velocity  = sqrt(2*marker%energy_kinetic/marker%mass)
@@ -410,7 +410,7 @@ contains
   subroutine validate_new_marker(marker, validityFlag) 
     type(particle), intent(in) :: marker
     integer, intent(out) :: validityFlag
-
+    print *, "validate_new_marker"
     validityFlag = 0
 
     if ( (marker%energy_kinetic .lt. 0d0) .or. &
@@ -422,7 +422,7 @@ contains
 
     if ( (marker%R .lt. plasma_boundingbox%Rmin) .or. &
          (marker%R .gt. plasma_boundingbox%Rmax) .or. &
-         (marker%Z .lt. plasma_boundingbox%Zmin) .or. &
+         (marker%Z .lt. plasma_boundingbox%Zmin) .or. & 
          (marker%Z .gt. plasma_boundingbox%Zmax) ) then
        validityFlag = 2
        return

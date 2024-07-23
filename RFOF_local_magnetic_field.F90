@@ -18,25 +18,27 @@ contains
   !--------------------------------------------------------------------------------
   function get_local_magnetic_field(R,phi,z,marker) result(Blocal)
 
-    use RFOF_magnetic_field, only: magnetic_field_local
+    use RFOF_magnetic_field , only: magnetic_field_local
     use RFOF_markers, only: particle
 
     ! Input
     real(8), intent(in) :: R
     real(8), intent(in) :: phi
     real(8), intent(in) :: z
-    type(particle), optional, intent(in) :: marker
+    real(8) :: mass=2.0  !Yuri
+    type(particle), optional, intent (in) :: marker
 
     ! Output
     type(magnetic_field_local) :: Blocal
 #ifdef USE_MAGNETIC_FIELD_INTERFACE
     interface
-       subroutine local_magnetic_field_interface_to_RFOF(R,phi,z, &
+       subroutine local_magnetic_field_interface_to_RFOF(R,phi,z, mass, &
             psi,theta,Bmod,F,psi_Estatic,dBmod_dpsi,dF_dpsi,dBmod_dtheta,dF_dtheta)
 
          real(8), intent(in) :: R
          real(8), intent(in) :: phi
          real(8), intent(in) :: z
+         real(8), intent(in) :: mass
          real(8), intent(out) :: psi
          real(8), intent(out) :: theta
          real(8), intent(out) :: Bmod
@@ -49,25 +51,30 @@ contains
        end subroutine local_magnetic_field_interface_to_RFOF
     end interface
 
-#endif  ! USE_MAGNETIC_FIELD_INTERFACE
+#endif  
+! USE_MAGNETIC_FIELD_INTERFACE
     Blocal%R = R
     Blocal%phi = phi
     Blocal%z = z
 #ifdef USE_MAGNETIC_FIELD_INTERFACE
-    call local_magnetic_field_interface_to_RFOF(R,phi,z, &
+    call local_magnetic_field_interface_to_RFOF(R,phi,z, mass,  &
          Blocal%psi,Blocal%theta,Blocal%Bmod,Blocal%F,Blocal%psi_Estatic, &
          Blocal%dBmod_dpsi,Blocal%dF_dpsi,Blocal%dBmod_dtheta,Blocal%dF_dtheta)
-#else  ! USE_MAGNETIC_FIELD_INTERFACE
+#else  
+  ! USE_MAGNETIC_FIELD_INTERFACE
     print *, "Abans de marker mass"
-    Blocal%Bmod =  (0.5d0 * marker%mass * marker%vperp**2) /  marker%magneticMoment  
+   ! print *, "La massa val", marker%mass 
+    Blocal%Bmod = marker%mass ! (0.5d0 * marker%mass * marker%vperp**2) /  marker%magneticMoment  Yuri
     print *, "Després de marker mass"
-    Blocal%psi = marker%psi
-    Blocal%F = (marker%Pphi - marker%charge * marker%psi) / &
-         (marker%mass * marker%vpar / Blocal%Bmod)
+    Blocal%psi = 0.5 !marker%psi  Yuri
+    print *, "Després de marker psi"
+    Blocal%F = 0.5 ! (marker%Pphi - marker%charge * marker%psi) / &
+      !   (marker%mass * marker%vpar / Blocal%Bmod)  Yuri
   !! REMOVE theta!!!  Blocal%theta = 0d0
-    Blocal%psi_Estatic = marker%energy - marker%energy_kinetic
+    Blocal%psi_Estatic = 0.5 !marker%energy - marker%energy_kinetic  Yuri
 
-#endif  ! USE_MAGNETIC_FIELD_INTERFACE
+#endif  
+! USE_MAGNETIC_FIELD_INTERFACE
 
   end function get_local_magnetic_field
 

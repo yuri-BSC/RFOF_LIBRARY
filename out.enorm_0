@@ -1,0 +1,9 @@
+ RFOF version 0                                                                                                                       
+ E-field normalization                                                                                                           
+  
+ Nr_columns=           3
+  
+ Variables (1 per column):
+ time,Power_1_1,Enorm_1_1                                                                                                        
+  
+  0.2000000E-02  0.0000000E+00  0.5000000E+00

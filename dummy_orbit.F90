@@ -120,7 +120,8 @@ contains
 
     ! Local
     real(8) :: R0, B0, q, aminor
-    real(8) :: weight, charge, mass,R,phi,z,E,xi,tauBounce
+    real(8) :: mass = 2.0
+    real(8) :: weight, charge, R,phi,z,E,xi,tauBounce
     type(magnetic_field_local) :: Blocal
     real(8) :: Rmin
     real(8) :: Rmax
@@ -170,6 +171,7 @@ contains
     !print *, " B0=", Bglobal%B0
     !print *, " R0=", Bglobal%R0
     ! Get wave field
+    print *, 'mass:', mass 
     print *, " ---Init Wave field---"
     call dummy_rf_wave_field(RFglobal)
 
@@ -183,12 +185,13 @@ contains
     ! Get marker
     print *, " ---Init marker---"
     E = E * 1.6022e-19
-    Blocal = get_local_magnetic_field(R,phi,z)
+    print *, "la massa es " , mass
+    Blocal = get_local_magnetic_field(R,phi,z, marker)
     print *, "test-1"
     tauBounce = R0 / sqrt(2*E/1.66e-27)
+
     call make_marker(marker_static, weight,charge,mass,E,xi,tauBounce,Blocal)
     !call set_marker_pointers_from_marker(marker_static , marker)
-    
     call set_marker_pointers(marker,   marker_static%Id,              marker_static%weight, &
          marker_static%R,              marker_static%phi,             marker_static%z,  &
          marker_static%charge,         marker_static%mass,            marker_static%energy, &
