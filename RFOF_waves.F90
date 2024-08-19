@@ -322,6 +322,7 @@ contains
     read( io_channel_3872, input_wavefields)
     close(io_channel_3872)
     print *, 'wave field parameters=', nnphi,nfreq,RFpower,EfieldNormalisation,freq,nphi,kperp
+    
 
     allocate( Erho(nfreq,nnphi,N1,N2))
     allocate( Edia(nfreq,nnphi,N1,N2))
@@ -366,6 +367,8 @@ contains
           enddo
        enddo
     enddo
+
+    print *, "Que esta passant"
 
     call construct_dummy_euitm_waves(itm_waves)
     print *, "Check2"

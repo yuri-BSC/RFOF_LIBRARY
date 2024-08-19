@@ -50,10 +50,11 @@ contains
 
     print *, "init_dumorb"
     call init_dumorb(RFglobal,marker,marker_static,mem,diagno,NtimeSteps,dt,NACC)
-    
+  
     time=0.
     time_at_last_Erenorm = time
     do jtime=1,NtimeSteps
+
        !print *, "  --  step_orbit_dumorb -- ", time, dt
 
        !---------------------------
@@ -63,15 +64,16 @@ contains
        NACC = real(mod(jtime , 3)+1)  ! For testing acceleration; can we find resonances also with acceleration?
        dtACC=dt*NACC
        !write(0,*)"nacc=",nacc,dtACC,time
+       print *, "Aqui inicia una iteracio del do de run_dumorb"
+     
        call step_orbit_dumorb(marker,dtACC,NACC)
        time = time + dtACC
-
        ! Add RF kicks
+
        call RFOF_master(time,time-1e-6, &
             RFglobal,marker,mem,diagno,MPI_nod_Id, &
             interaction_failed_particle_overshot_resonance, &
             time_at_resonance)
-
        ! END LOOP over markers
        !---------------------------
 
@@ -86,8 +88,9 @@ contains
 
        if (interaction_failed_particle_overshot_resonance) then
           write(0,*)'...'
-          print *, 'kick failed: t_res, t',time_at_resonance, time
+          print *, 'kick failed: t_res, t', time_at_resonance, time
        endif
+       print *, "Aqui s'ha fet una iteració del do de run_dumorb"
     enddo
     write(0,*)'loop done'
 
@@ -120,8 +123,8 @@ contains
 
     ! Local
     real(8) :: R0, B0, q, aminor
-    real(8) :: mass = 2.0
-    real(8) :: weight, charge, R,phi,z,E,xi,tauBounce
+    real(8) :: mass 
+    real(8) :: weight, charge, R,phi,psi,z,E,xi,tauBounce
     type(magnetic_field_local) :: Blocal
     real(8) :: Rmin
     real(8) :: Rmax
@@ -130,7 +133,7 @@ contains
 
     NAMELIST/input_control/dt, NtimeSteps
     NAMELIST/input_magnetifield/R0, aminor, B0, q
-    NAMELIST/input_marker/weight,R,phi,z,mass,charge,E,xi
+    NAMELIST/input_marker/weight,R,phi, psi, z,mass,charge,E,xi
     NAMELIST/simplify_rfof/ &
          simplify__static_resonance_position_during_RF_kick , &
          simplify__drift_velocity_does_not_affect_resonance_condition , &
@@ -157,9 +160,9 @@ contains
     read( io_channel_3872, input_control)
     read( io_channel_3872, input_magnetifield)
     read( io_channel_3872, input_marker)
-    !read( io_channel_3872, simplify_rfof)
-    !read( io_channel_3872, IO_control)
-    !read( io_channel_3872, rz_boundingbox)
+   ! read( io_channel_3872, simplify_rfof)
+   ! read( io_channel_3872, IO_control)
+   ! read( io_channel_3872, rz_boundingbox)
     close(io_channel_3872)
 
     ! Set plasma bounding box in R,Z
@@ -185,15 +188,15 @@ contains
     ! Get marker
     print *, " ---Init marker---"
     E = E * 1.6022e-19
-    print *, "la massa es " , mass
-    Blocal = get_local_magnetic_field(R,phi,z, marker)
-    print *, "test-1"
-    tauBounce = R0 / sqrt(2*E/1.66e-27)
-
-    call make_marker(marker_static, weight,charge,mass,E,xi,tauBounce,Blocal)
-    !call set_marker_pointers_from_marker(marker_static , marker)
+!    print *, "la massa es " , mass
+!    Blocal = get_local_magnetic_field(R,phi,z, marker)
+!    print *, "test-1"
+!    tauBounce = R0 / sqrt(2*E/1.66e-27)
+   
+    call make_marker(marker_static, weight,charge,mass, psi,E,xi,tauBounce,Blocal) 
+   ! call set_marker_pointers_from_marker(marker_static , marker)
     call set_marker_pointers(marker,   marker_static%Id,              marker_static%weight, &
-         marker_static%R,              marker_static%phi,             marker_static%z,  &
+         marker_static%R,              marker_static%phi,             marker_static%z, marker_static%psi, &
          marker_static%charge,         marker_static%mass,            marker_static%energy, &
          marker_static%energy_kinetic, marker_static%velocity,        marker_static%magneticMoment, &
          marker_static%Pphi,           marker_static%vpar,            marker_static%vperp, &
@@ -204,17 +207,24 @@ contains
          marker_static%d_vDriftDia_d_rho, marker_static%d_vDriftDia_d_dia, &
          time_acceleration)
 
+    print *, "Voy a printear el marker%psi en el init_dumorb"
+    print *, marker%psi 
+
+    print *, "la massa es " , mass    !Prova Yuri
+    Blocal = get_local_magnetic_field(R,phi,z, mass, marker)   !Prova Yuri
+    print *, "test-1"    !Prova Yuri
+    tauBounce = R0 / sqrt(2*E/1.66e-27)    !Prova Yuri
+
     ! Get diagnostics
     print *, " ---Init diagnostics---"
     call contructor_RFOF_cumlative_diagnostics(diagno,RFglobal%nfreq,RFglobal%max_nnphi)
-
+ 
   end subroutine init_dumorb
 
   !--------------------------------------------------------------------------------
   ! subroutine exit_dumorb
   !--------------------------------------------------------------------------------
   subroutine exit_dumorb(RFglobal,mem,diagno)
-
     ! Input/Output
     type(rf_wave_global), intent(inout) :: RFglobal
     type(resonance_memory), pointer, intent(out) :: mem(:,:)
@@ -228,7 +238,7 @@ contains
   ! subroutine step_orbit_dumorb
   !--------------------------------------------------------------------------------
   subroutine step_orbit_dumorb(marker,dt,NACC)
-
+    use RFOF_markers
     ! Input
     real(8), intent(in) :: dt
     real(8), intent(in) :: NACC
@@ -239,7 +249,7 @@ contains
     ! Local
     real(8) :: Bphi, Bpol, Bmod
     real(8) :: vpol, vphi
-    real(8) :: rho, theta0, theta, R, phi, z
+    real(8) :: rho, theta0, theta, R, phi, z, mass
     real(8) :: dtORB
     type(magnetic_field_local) :: Blocal
 
@@ -250,9 +260,13 @@ contains
 !    rho = 0.30166
     theta0 = sign(1d0,marker%z)*acos(( marker%R-Bglobal%R0)/rho)
 
+    print *, "Aquí deu estar l'errada ara"
     ! Local B-field before kick
-    Blocal = get_local_magnetic_field(marker%R,marker%phi,marker%z)
-
+    print *, "Agora el marker%psi val ", marker%psi
+    print *, "Agora val la massa", marker%mass
+  
+    Blocal = get_local_magnetic_field(marker%R,marker%phi,marker%z, marker%mass)
+    print *, "Aqui estic arribant?"
 !    print *, "-"
 
     Bphi = Blocal%F / marker%R
@@ -273,8 +287,8 @@ contains
     z =              rho*sin(theta)
 
     ! Local B-field after kick
-    Blocal = get_local_magnetic_field(R,phi,z)
-    call update_marker(marker,Blocal)
+    Blocal = get_local_magnetic_field(R,phi,z, mass)
+    call update_marker(marker,Blocal) 
 
   end subroutine step_orbit_dumorb
 
@@ -345,6 +359,8 @@ contains
 
     print *,  x, err, fprim, err/fprim
 
+
   end subroutine test_ridder
+  
 
 end module dummy_orbit

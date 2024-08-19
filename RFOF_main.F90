@@ -123,7 +123,7 @@ module RFOF_main
       integer :: jWave, jfreq, jnphi
 
       ! Get the magnetic field values at the location of the test particle
-      Blocal = get_local_magnetic_field(marker%R,marker%phi,marker%z)
+      Blocal = get_local_magnetic_field(marker%R,marker%phi,marker%z, marker%mass)
 
 
       do jWave=1,nr_resonant_waves

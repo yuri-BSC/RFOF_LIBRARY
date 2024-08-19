@@ -359,7 +359,7 @@ contains
 
     ! If the marker has moved; recalculate the magnetic and the RF wave fields
     if ((abs(R-state%marker%R).gt.1e-8) .or. (abs(z-state%marker%z).gt.1e-8)) then
-       state%Blocal  = get_local_magnetic_field(state%marker%R,state%marker%phi,state%marker%z)
+       state%Blocal  = get_local_magnetic_field(state%marker%R,state%marker%phi,state%marker%z, state%marker%mass)
        state%RFlocal = get_rf_wave_local(state%marker%R,state%marker%phi,state%marker%z,state%RFglobal)
     endif
 

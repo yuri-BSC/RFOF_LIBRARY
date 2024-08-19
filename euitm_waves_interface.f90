@@ -24,7 +24,7 @@ contains
     open( io_channel_3872, FILE='input.rfof')
     read( io_channel_3872, input_wavefields)
     close(io_channel_3872)
-    write(*,*) nfreq, nnphi, nphi , RFpower, EfieldNormalisation, freq, kperp
+!    write(*,*) nfreq, nnphi, nphi , RFpower, EfieldNormalisation, freq, kperp
     nion = 1
     npsi = 1
     ntheta = 1

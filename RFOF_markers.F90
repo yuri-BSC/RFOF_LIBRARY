@@ -9,17 +9,19 @@ module RFOF_markers
   use RFOF_constants
   use RFOF_magnetic_field
   use RFOF_parameters
-
+  
   implicit none
 
 
   real(8), target :: RFOF_default_weight = 1
 
+
+
   type, public :: particle
      integer, pointer :: Id                  !< Number to identify particle
      real(8), pointer :: weight              !< Number of real particles represented by the marker
      real(8), pointer :: charge              !< Charge (SI units; everything is in SI)
-     real(8), pointer :: mass               !< Mass (SI units; everything is in SI)
+     real(8), pointer :: mass                !< Mass (SI units; everything is in SI)
 
      real(8), pointer :: R                   !< Major radius
      real(8), pointer :: phi                 !< Toroidal angle
@@ -56,11 +58,12 @@ module RFOF_markers
      integer :: Id
      real(8) :: weight
      real(8) :: charge
-     real(8) :: mass = 2.0
+     real(8) :: mass 
 
      real(8) :: R
      real(8) :: phi
      real(8) :: z
+     real(8) :: psi 
 
      real(8) :: energy
      real(8) :: energy_kinetic
@@ -88,7 +91,6 @@ module RFOF_markers
   end type particle_static
 
 
-
 contains
 
   function copy_particle_pointer2pointer(pi) result(po)
@@ -108,6 +110,7 @@ contains
     po%R = pi%R
     po%phi = pi%phi
     po%z = pi%z
+    po%psi = pi%psi
 
     po%energy = pi%energy
     po%energy_kinetic = pi%energy_kinetic
@@ -153,6 +156,7 @@ contains
     po%R = pi%R
     po%phi = pi%phi
     po%z = pi%z
+    po%psi = pi%psi
 
     po%energy = pi%energy
     po%energy_kinetic = pi%energy_kinetic
@@ -199,6 +203,7 @@ contains
     po%R = pi%R
     po%phi = pi%phi
     po%z = pi%z
+    po%psi = pi%psi
 
     po%energy = pi%energy
     po%energy_kinetic = pi%energy_kinetic
@@ -246,8 +251,11 @@ contains
     marker%R   = Blocal%R
     marker%z   = Blocal%z
     marker%phi = Blocal%phi
+    marker%psi = Blocal%psi
     marker%vpar  = xi * marker%velocity
     marker%vperp  = sqrt( max(marker%velocity**2 - marker%vpar**2 , 0d0) )
+    print *, "Printeo el marker%mass antes del omega_gyro" , marker%mass
+    print *, "Printejo el marker%charge antes del omega_gyro", marker%charge
     marker%omega_gyro = marker%charge * Blocal%Bmod / marker%mass
 
   end subroutine update_marker
@@ -269,6 +277,7 @@ contains
     m2%R => m1%R
     m2%phi => m1%phi
     m2%z => m1%z
+    m2%psi =>m1%psi
     m2%charge => m1%charge
     m2%mass => m1%mass
     m2%energy => m1%energy
@@ -301,7 +310,7 @@ contains
   ! subroutine make_marker
   !--------------------------------------------------------------------------------
   subroutine set_marker_pointers(marker , &
-       Id, weight, R, phi, z, &
+       Id, weight, R, phi, z, psi , &
        charge, mass, energy, energy_kinetic, &
        velocity, magneticMoment, Pphi, vpar, &
        vperp, omega_gyro, tauBounce, vDrift, &
@@ -311,7 +320,7 @@ contains
 
     ! Input
     integer, target, intent(in) :: Id
-    real(8), target, intent(in) :: weight,R,phi,z, charge
+    real(8), target, intent(in) :: weight,R,phi,z, psi, charge
     real(8), target, intent(in) :: mass
     real(8), target, intent(in) :: energy,energy_kinetic,velocity 
     real(8), target, intent(in) :: magneticMoment,Pphi,vpar,vperp,omega_gyro,tauBounce 
@@ -329,6 +338,7 @@ contains
     marker%R => R
     marker%phi => phi
     marker%z => z
+    marker%psi => psi
     marker%mass => mass
     marker%charge => charge
     marker%energy => energy
@@ -359,24 +369,25 @@ contains
   end subroutine set_marker_pointers
 
   !--------------------------------------------------------------------------------
-  subroutine make_marker(marker, weight,charge,mass,E,xi,tauBounce,Blocal)
+  subroutine make_marker(marker, weight,charge,mass, psi,E,xi,tauBounce,Blocal)
 
     ! Input
-    real(8), intent(in) :: weight,charge,mass,E,xi,tauBounce
+    real(8), intent(inout) :: weight,charge,mass, psi, E,xi,tauBounce
     type(magnetic_field_local), intent(in) :: Blocal
    
     ! Output
     type(particle_static), intent(out) :: marker
     ! Get marker
     print *, "make_marker"
-    marker%Id     = 1
+    marker%Id  = 1
     marker%weight = weight
     marker%R   = Blocal%R
     marker%z   = Blocal%z
     marker%phi = Blocal%phi
-
+    marker%psi = psi   ! He definit això perquè no estava definit enlloc. 
     marker%charge  = charge * rfof_ev
     marker%mass  = mass * rfof_amu
+    !marker%mass = 1.6d-27 
     marker%energy  = E
     marker%energy_kinetic  = E - marker%charge*Blocal%psi_Estatic
     marker%velocity  = sqrt(2*marker%energy_kinetic/marker%mass)

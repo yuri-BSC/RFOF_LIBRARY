@@ -3,7 +3,6 @@
 program rftest
 
   use dummy_orbit
-
   implicit none
 
   print *, " ---dumorb--- (trace dummy orbit and give RF kicks)"
@@ -14,6 +13,8 @@ program rftest
   print *, " --- TEST RFOF ROUTINES ---"
   call my_tests
   print *, " --- DONE: TEST RFOF ROUTINES ---"
+
+  print *, "The end of the program is reached here"
 
 contains
 

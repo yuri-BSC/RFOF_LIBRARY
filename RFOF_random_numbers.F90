@@ -2,11 +2,15 @@ module RFOF_random_numbers
 
 #include "config.h"
 
-contains
-
 #ifdef USE_ISO_C_BINDING
   use, intrinsic :: ISO_C_BINDING
 #endif
+
+contains
+
+!#ifdef USE_ISO_C_BINDING
+!  use, intrinsic :: ISO_C_BINDING
+!#endif
 
   !--------------------------------------------------------------------------------
   function rand_uniform_var0mean1() result(y)

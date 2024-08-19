@@ -59,6 +59,8 @@ contains
 
     call read_diagnostic_parameters_from_namelist_file
 
+
+
     if (.not. ALLOCATED(diagno%kick_counter) ) then
        allocate(diagno%kick_counter(nfreq,nnphi))
     endif
@@ -397,7 +399,7 @@ contains
     type(magnetic_field_local), target :: Blocal
 
     ! Get the magnetic field values at the location of the test particle
-    Blocal = get_local_magnetic_field(marker%R,marker%phi,marker%z)
+    Blocal = get_local_magnetic_field(marker%R,marker%phi,marker%z, marker%mass)
 
     data( 1) = time
     data( 2) = marker%weight
