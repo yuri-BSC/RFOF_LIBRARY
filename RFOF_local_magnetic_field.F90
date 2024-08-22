@@ -65,11 +65,11 @@ contains
     
     print *, "The value of marker mass before Blocal%Bmod"
     if (counter > 0) then
-      print *, "Now, the second iteration on step_dumorb is reached, and the markers issues will arise"
+      print *, "Now, step_dumorb is using local_magnetic, and the markers issues will arise, it cannot even print marker%mass"
     else 
-      print *, "First time on the step_dumorb, no issues occur"   
+      print *, "This time init_dumorb is using local_magnetic, no issues occur"   
     end if
-  
+    
     print *, marker%mass       
     Blocal%Bmod = (0.5d0 * marker%mass * marker%vperp**2) /  marker%magneticMoment 
     print *, "The value of  marker%psi before Blocal%psi"

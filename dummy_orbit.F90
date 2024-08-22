@@ -69,7 +69,7 @@ contains
        call step_orbit_dumorb(marker,dtACC,NACC)
        time = time + dtACC
        ! Add RF kicks
-
+       print *, "Is this point being reached?"
        call RFOF_master(time,time-1e-6, &
             RFglobal,marker,mem,diagno,MPI_nod_Id, &
             interaction_failed_particle_overshot_resonance, &
@@ -284,9 +284,10 @@ contains
     phi = Blocal%phi + vphi * dtORB / Blocal%R
     R = Bglobal%R0 + rho*cos(theta)
     z =              rho*sin(theta)
-
+    
     ! Local B-field after kick
     Blocal = get_local_magnetic_field(R,phi,z, mass)
+
     call update_marker(marker,Blocal) 
 
   end subroutine step_orbit_dumorb
