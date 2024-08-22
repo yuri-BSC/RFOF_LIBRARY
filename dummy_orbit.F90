@@ -64,7 +64,7 @@ contains
        NACC = real(mod(jtime , 3)+1)  ! For testing acceleration; can we find resonances also with acceleration?
        dtACC=dt*NACC
        !write(0,*)"nacc=",nacc,dtACC,time
-       print *, "Aqui inicia una iteracio del do de run_dumorb"
+       print *, "Here an iteration of the do in run_dumorb starts"
      
        call step_orbit_dumorb(marker,dtACC,NACC)
        time = time + dtACC
@@ -90,7 +90,7 @@ contains
           write(0,*)'...'
           print *, 'kick failed: t_res, t', time_at_resonance, time
        endif
-       print *, "Aqui s'ha fet una iteració del do de run_dumorb"
+       print *, "At this point an iteration of the do in run_dumorb has been performed"
     enddo
     write(0,*)'loop done'
 
@@ -207,12 +207,12 @@ contains
          marker_static%d_vDriftDia_d_rho, marker_static%d_vDriftDia_d_dia, &
          time_acceleration)
 
-    print *, "Voy a printear el marker%psi en el init_dumorb"
+ 
     print *, marker%psi 
 
-    print *, "la massa es " , mass    !Prova Yuri
+    print *, "the value of the mass at init_dumorb " , mass    !Prova Yuri
     Blocal = get_local_magnetic_field(R,phi,z, mass, marker)   !Prova Yuri
-    print *, "test-1"    !Prova Yuri
+  
     tauBounce = R0 / sqrt(2*E/1.66e-27)    !Prova Yuri
 
     ! Get diagnostics
@@ -242,10 +242,9 @@ contains
     ! Input
     real(8), intent(in) :: dt
     real(8), intent(in) :: NACC
-
+  
     ! Input/Output
     type(particle), intent(inout) :: marker
-
     ! Local
     real(8) :: Bphi, Bpol, Bmod
     real(8) :: vpol, vphi
@@ -260,13 +259,13 @@ contains
 !    rho = 0.30166
     theta0 = sign(1d0,marker%z)*acos(( marker%R-Bglobal%R0)/rho)
 
-    print *, "Aquí deu estar l'errada ara"
+
     ! Local B-field before kick
-    print *, "Agora el marker%psi val ", marker%psi
-    print *, "Agora val la massa", marker%mass
+    print *, "The marker%psi before calling get_local_mf is ", marker%psi
+    print *, "The marker%mass before calling get_local_mf is", marker%mass
   
     Blocal = get_local_magnetic_field(marker%R,marker%phi,marker%z, marker%mass)
-    print *, "Aqui estic arribant?"
+    print *, "Am I reaching the point after calling get_local?"
 !    print *, "-"
 
     Bphi = Blocal%F / marker%R

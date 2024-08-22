@@ -112,7 +112,6 @@ contains
     integer :: boundaryCondition1(2), boundaryCondition2(2)
     integer :: ier
 
-    print *, "Vale"
     n1=size(x1,1)
     n2=size(x1,2)
     nfreq=size(freq)
@@ -317,7 +316,6 @@ contains
     NAMELIST/input_wavefields/nfreq , nnphi , RFpower, &
         EfieldNormalisation, freq, nphi, kperp
 
-    print *, 'Check1'
     open( io_channel_3872, FILE='input.rfof')
     read( io_channel_3872, input_wavefields)
     close(io_channel_3872)
@@ -368,10 +366,9 @@ contains
        enddo
     enddo
 
-    print *, "Que esta passant"
 
     call construct_dummy_euitm_waves(itm_waves)
-    print *, "Check2"
+
     IF ( 0 .EQ. 1 ) THEN
        call rf_wave_constructor(RFglobal, x1,x2, &
             EfieldNormalisationMatrix,RFpowerMatrix, &

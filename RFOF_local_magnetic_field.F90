@@ -26,6 +26,7 @@ contains
     real(8), intent(inout) :: R
     real(8), intent(inout) :: phi
     real(8), intent(inout) :: z
+    real(8) :: counter=0
     real(8), target, intent(in) :: mass
     type(particle), optional, intent (inout) :: marker    
 
@@ -57,30 +58,30 @@ contains
     Blocal%z = z
 
 #ifdef USE_MAGNETIC_FIELD_INTERFACE
-    print *, "Bon dia, la phi val"
-    print *,  phi
     call local_magnetic_field_interface_to_RFOF(R,phi,z, &
          Blocal%psi,Blocal%theta,Blocal%Bmod,Blocal%F,Blocal%psi_Estatic, &
          Blocal%dBmod_dpsi,Blocal%dF_dpsi,Blocal%dBmod_dtheta,Blocal%dF_dtheta)
 #else ! USE_MAGNETIC_FIELD_INTERFACE
     
-    print *, "Abans de marker mass"
-   ! marker%mass => mass
-
+    print *, "The value of marker mass before Blocal%Bmod"
+    if (counter > 0) then
+      print *, "Now, the second iteration on step_dumorb is reached, and the markers issues will arise"
+    else 
+      print *, "First time on the step_dumorb, no issues occur"   
+    end if
+  
     print *, marker%mass       
     Blocal%Bmod = (0.5d0 * marker%mass * marker%vperp**2) /  marker%magneticMoment 
-    print *, "Després de marker mass"
-    print *, "Abans de marker psi"
-  !  Blocal%psi = marker%psi  
+    print *, "The value of  marker%psi before Blocal%psi"
     print *, marker%psi
-    print *, "Després de marker psi"
+    Blocal%psi = marker%psi  
+  
     Blocal%F = (marker%Pphi - marker%charge * marker%psi) / &
         (marker%mass * marker%vpar / Blocal%Bmod)  
   !! REMOVE theta!!!  Blocal%theta = 0d0
     Blocal%theta = 0d0    
     Blocal%psi_Estatic = marker%energy - marker%energy_kinetic  
-    print *, "Ara markerpsi dona problemes"
-
+    counter = counter + 1
 #endif  ! USE_MAGNETIC_FIELD_INTERFACE
 
   end function get_local_magnetic_field

@@ -254,8 +254,7 @@ contains
     marker%psi = Blocal%psi
     marker%vpar  = xi * marker%velocity
     marker%vperp  = sqrt( max(marker%velocity**2 - marker%vpar**2 , 0d0) )
-    print *, "Printeo el marker%mass antes del omega_gyro" , marker%mass
-    print *, "Printejo el marker%charge antes del omega_gyro", marker%charge
+    
     marker%omega_gyro = marker%charge * Blocal%Bmod / marker%mass
 
   end subroutine update_marker
